@@ -1,9 +1,9 @@
 const App = () => {
 
-  //const definitions
-  const course = 'Half Stack application development'
-  const parts =[ {
-    name: 'Fundamentals of React',
+  const course = {
+    name : 'Half Stack application development',
+    parts: [
+    {name: 'Fundamentals of React',
     exercises: 10
   },
   {
@@ -12,15 +12,16 @@ const App = () => {
   },
   {
     name: 'State of a component',
-    exercises: 10
-  }]
-
+    exercises: 10  
+  }
+]
+ }
   return (
     <div>
       
       <Header course={course}/>
-      <Content parts={parts}/>
-      <Total parts={parts}/>
+      <Content course={course}/>
+      <Total course={course}/>
       
 
     </div>
@@ -30,17 +31,18 @@ const App = () => {
 const Header = (course) => {
   return (
     <>
-    <h1>{course.course}</h1>
+    <h1>{course.course.name}</h1>
     </>
   )
 }
 
-const Content = (parts) => {
+const Content = (course) => {
   return (
+
     <div>
-    <Part parts={{name:parts.parts[0].name, exercises:parts.parts[0].exercises}}/>
-    <Part parts={{name:parts.parts[1].name, exercises:parts.parts[1].exercises}}/>
-    <Part parts={{name:parts.parts[2].name, exercises:parts.parts[2].exercises}}/>
+    <Part parts={{name:course.course.parts[0].name, exercises:course.course.parts[0].exercises}}/>
+    <Part parts={{name:course.course.parts[1].name, exercises:course.course.parts[1].exercises}}/>
+    <Part parts={{name:course.course.parts[2].name, exercises:course.course.parts[2].exercises}}/>
     
     </div>
   )
@@ -48,16 +50,18 @@ const Content = (parts) => {
 
 const Part = (parts) => {
   return (
+
     <>
     <p>{parts.parts.name} {parts.parts.exercises}</p>
     </>
   )
 }
 
-const Total = (total) => {
+const Total = (course) => {
+  console.log(course.course.parts[0].exercises)
   return (
     <>
-    <p>Number of exercises {total.parts[0].exercises+total.parts[1].exercises+total.parts[2].exercises}</p>
+    <p>Number of exercises {course.course.parts[0].exercises+course.course.parts[1].exercises+course.course.parts[2].exercises}</p>
     </>
   )
 }
