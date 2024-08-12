@@ -5,7 +5,9 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-
+  const all = (good + neutral + bad)
+  const average = isNaN((good-bad)/all) ? 0 : (good-bad)/all
+  const positive = isNaN(good/all) ? 0 : good/all
 
   const Section = (props) => (
     <h1>{props.text}</h1>
@@ -16,7 +18,7 @@ const App = () => {
   )
 
   const Statistics = props => (
-    <p>{props.text} {props.tally}</p>
+    <p>{props.text} {props.value} {props.deliminator}</p>
   )
 
   const handleGood = () => {
@@ -41,9 +43,12 @@ const App = () => {
       <Button handleClick={() => handleNeutral()} text ='neutral' />
       <Button handleClick={() => handleBad()} text='bad'/>
       <Section text='statistics'/>
-      <Statistics text='good' tally={good}/>
-      <Statistics text='neutral' tally={neutral}/>
-      <Statistics text='bad' tally={bad}/> 
+      <Statistics text='good' value={good}/>
+      <Statistics text='neutral' value={neutral}/>
+      <Statistics text='bad' value={bad}/>
+      <Statistics text='all' value={all}/>
+      <Statistics text='average' value={average}/>
+      <Statistics text='percentage' value={positive} deliminator='%'/> 
 
     </div>
   )
