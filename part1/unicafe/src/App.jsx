@@ -18,21 +18,27 @@ const App = () => {
   )
 
   const Statistics = (props) => {
+    console.log(props)
     
     if(props.all == 0){
-      return (<p>No feedback given</p>
-      )
+      return (<StatisticLine text="No feedback given"/>)
     }
     return (
-    <>
-    <p>good {props.good}</p>
-    <p>neutral {props.neutral}</p>
-    <p>bad {props.bad}</p>
-    <p>all {props.all}</p>
-    <p>average {props.average}</p>
-    <p>percentage {props.positive} {props.delimiter}</p>
-    </>
+    <div>
+    <StatisticLine text="good" value={props.good}/>  
+    <StatisticLine text="neutral" value={props.neutral}/>  
+    <StatisticLine text="bad" value={props.bad}/>  
+    <StatisticLine text="all" value={props.all}/>  
+    <StatisticLine text="average" value={props.average}/>  
+    <StatisticLine text="positive" value={props.positive} delimiter={props.delimiter}/>  
+    </div>
   )}
+
+  const StatisticLine = props => (
+    <p>{props.text} {props.value} {props.delimiter}</p>
+  )
+
+
 
   const handleGood = () => {
     const updatedGood = good + 1
