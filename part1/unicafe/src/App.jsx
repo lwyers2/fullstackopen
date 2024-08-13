@@ -17,9 +17,22 @@ const App = () => {
     <button onClick={props.handleClick}>{props.text}</button>
   )
 
-  const Statistics = props => (
-    <p>{props.text} {props.value} {props.deliminator}</p>
-  )
+  const Statistics = (props) => {
+    
+    if(props.all == 0){
+      return (<p>No feedback given</p>
+      )
+    }
+    return (
+    <>
+    <p>good {props.good}</p>
+    <p>neutral {props.neutral}</p>
+    <p>bad {props.bad}</p>
+    <p>all {props.all}</p>
+    <p>average {props.average}</p>
+    <p>percentage {props.positive} {props.delimiter}</p>
+    </>
+  )}
 
   const handleGood = () => {
     const updatedGood = good + 1
@@ -43,12 +56,7 @@ const App = () => {
       <Button handleClick={() => handleNeutral()} text ='neutral' />
       <Button handleClick={() => handleBad()} text='bad'/>
       <Section text='statistics'/>
-      <Statistics text='good' value={good}/>
-      <Statistics text='neutral' value={neutral}/>
-      <Statistics text='bad' value={bad}/>
-      <Statistics text='all' value={all}/>
-      <Statistics text='average' value={average}/>
-      <Statistics text='percentage' value={positive} deliminator='%'/> 
+      <Statistics good={good} neutral={neutral} bad={bad} all={all} average={average} positive={positive} delimiter={"%"}/>
 
     </div>
   )
