@@ -1,35 +1,71 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+const Course = props => {
+  const total = props.course.parts.reduce((sum, part) => sum+part.exercises,0)
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  <div>
+    <Header id={props.course.id} name= {props.course.name}/>
+    <Content parts={props.course.parts}/>
+    <Total total={total}/>
+  </div>
+)
+
+}
+
+const Header = props =>(
+  <>
+  <h1 key={props.id}>{props.name}</h1>
+  </>
+)
+
+const Content = props =>(
+  <>
+  {props.parts.map(part=>
+    <Part key={part.id} name={part.name} exercises={part.exercises}/>
+  )}
+  </>
+)
+
+const Part = props => (
+<>
+<p>{props.name} {props.exercises}</p>
+</>
+)
+
+const Total = props => (
+  <>
+  <p><b>total of {props.total} exercises</b></p>
+  </>
+)
+
+
+const App =() => {
+  const course = {
+    id: 1,
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      }, 
+      {
+        name: 'Redux',
+        exercises: 11,
+        id:4
+      }
+    ]
+  }
+
+  return <Course course={course}/>
 }
 
 export default App
