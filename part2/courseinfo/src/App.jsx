@@ -2,7 +2,7 @@ const Course = props => {
   const total = props.course.parts.reduce((sum, part) => sum+part.exercises,0)
   return (
   <div>
-    <Header id={props.course.id} name= {props.course.name}/>
+    <Header id={props.course.id} name={props.course.name}/>
     <Content parts={props.course.parts}/>
     <Total total={total}/>
   </div>
@@ -38,7 +38,7 @@ const Total = props => (
 
 
 const App =() => {
-  const course = {
+  const courses = [{
     id: 1,
     name: 'Half Stack application development',
     parts: [
@@ -63,9 +63,35 @@ const App =() => {
         id:4
       }
     ]
+  },
+  {
+    name: 'Node.js',
+    id: 2,
+    parts: [
+      {
+        name: 'Routing',
+        exercises: 3,
+        id: 1
+      },
+      {
+        name: 'Middlewares',
+        exercises: 7,
+        id: 2
+      }
+    ]
   }
+  ]
 
-  return <Course course={course}/>
+  return (
+
+    <>
+    {courses.map(course=>
+      <Course key={course.id} course={course}/>
+    )}
+    </>
+    
+
+  ) 
 }
 
 export default App
