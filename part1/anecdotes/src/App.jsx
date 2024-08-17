@@ -2,6 +2,10 @@ import { useState } from 'react'
 
 const Button = ({onClick, text}) => <button onClick = {onClick}>{text}</button> 
 
+const Heading = props => (<h1>{props.text}</h1>)
+
+const Anecdote = props => (<p>{props.anecdote}<br></br>has {props.votes}</p>)
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -17,6 +21,7 @@ const App = () => {
  
   const [points, setPoints] = useState(Array(anecdotes.length).fill(0))
   const [selected, setSelected] = useState(0)
+  const [highestVote, setHighestVote] = useState(0)
 
   const setRandomAnecdote = () => {
     const getRandomInt = (Math.floor(Math.random() * (anecdotes.length)))    
@@ -27,20 +32,35 @@ const App = () => {
     const copy = [...points]
     copy[selected] +=1
     setPoints(copy)
+    const getHighest = () => {
+      let highest = 0
+      let pos =0;
+      for(let i=0; i<copy.length; i++) {
+        if(copy[i]>highest) {
+          highest = copy[i]
+          pos = i;
+        }
+      }
+      return pos;
+    }
+    setHighestVote(getHighest);
+    console.log(copy[highestVote])
   }
 
+  
 
   return (
     <div>
-      <p>{anecdotes[selected]} <br></br>
-      has {points[selected]} votes
-      </p>
+      <Heading text={"Anecdote of the day"}/>
+      <Anecdote anecdote={anecdotes[selected]} votes={points[selected]}/>
       <Button
         onClick={addVote}
         text='vote'/> 
       <Button
         onClick={setRandomAnecdote}
         text='next anecdote'/> 
+      <Heading text={"Anecdote with most votes"}/>
+      <Anecdote anecdote={anecdotes[highestVote]} votes={points[highestVote]}/>  
     </div>
   )
 }
