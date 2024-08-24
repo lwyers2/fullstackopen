@@ -1,3 +1,5 @@
+//TODO add comments as I've made this a little more confusing than it should be 
+
 import {useState, useEffect} from 'react'
 import './App.css'
 
@@ -20,6 +22,7 @@ const App = () => {
     }
   ])
   const [newName, setNewName] = useState('')
+  const [searchName, setsearchName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [errors, setErrors] = useState([])
 
@@ -100,9 +103,20 @@ const App = () => {
     }
   }, [errors]); // Runs whenever the `errors` array is updated
 
+
+  const handleSearch =() => {
+
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <form >
+        filter shown with <input
+        value={searchName}
+        onChange={handleSearch}/>
+      </form>
+      <h2>add a new</h2>
       <form onSubmit={addNameAndNumber}>
         <div>
           name: <input
