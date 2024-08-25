@@ -3,23 +3,16 @@
 import {useState, useEffect} from 'react'
 import './App.css'
 
-const Number = (props) => {
-  return (
-    <li>{props.name} {props.number}</li>
-  )
-}
+const Number = props => {<li>{props.name} {props.number}</li>}
 
-const Errors = (props) => {
-  return (
-    <li>{props.error}</li>
-  )
-}
+const Title = props => <h2>{props.title}</h2>
 
 const App = () => {
   const [persons, setPersons] = useState([
-    {name: 'Arto Hellas',
-    number: '040-1234567'
-    }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ])
   const [newName, setNewName] = useState('')
   const [searchName, setsearchName] = useState('')
@@ -27,6 +20,7 @@ const App = () => {
   const [errors, setErrors] = useState([])
 
   const addError = (errorMessage) => {
+    //replacing with prevErrors to keep them correct 
     setErrors((prevErrors) => [...prevErrors, errorMessage])
   }
 
@@ -39,6 +33,7 @@ const App = () => {
   }
 
   const validateName = () => {
+    //need a value to return. Set it to true initialy and only change to false if it doesn't follow below rules.
     let isValid = true
     if(persons.map(person => person.name).includes(newName)) {
       addError(`${newName} is already added to the phonebook`)
@@ -83,12 +78,11 @@ const App = () => {
     setErrors([])
     const nameObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id : persons.length+1
     }
     const isValidName = validateName()
     const isValidNumber = validateNumber()
-
-
     if(isValidName && isValidNumber) {
     setPersons(persons.concat(nameObject)) 
     setNewName('')
@@ -110,13 +104,13 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <Title title={"Phonebook"}/>
       <form >
         filter shown with <input
         value={searchName}
         onChange={handleSearch}/>
       </form>
-      <h2>add a new</h2>
+      <Title title={"add a new"}/>
       <form onSubmit={addNameAndNumber}>
         <div>
           name: <input
@@ -132,21 +126,13 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
+      <Title title={"Numbers"}/>
       <div>
       <ul>
       {persons.map(person =>
-        <Number key={person.name} name={person.name} number={person.number}/>
+        <Number key={person.id} name={person.name} number={person.number}/>
       )}
       </ul>
-      <div>
-        <h2>Errors</h2>
-        <ul>
-          {errors.map(error =>
-            <Errors  error={error}/>
-          )}
-        </ul>
-      </div>
       </div> 
     </div>
   )
