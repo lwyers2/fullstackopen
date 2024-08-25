@@ -1,10 +1,11 @@
 //Also adding useEffect to display errors when they occure
 import {useState, useEffect} from 'react'
 import './App.css'
-
-const Number = props => <li>{props.name} {props.number}</li>
-
-const Title = props => <h2>{props.title}</h2>
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Heading from './components/Heading'
+import SubHeading from './components/SubHeading'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -66,8 +67,11 @@ const App = () => {
   const validNumber = (numberString) => {
     let valid = true
     for(const c of numberString) {
-      if ((!(c >= '0' && c<='9')) || (!c === '-') ){
+      if (!(c >= '0' && c<='9')){
+        if( (!c === '-') )
+        {
         valid = false;
+        }
       }
     }
     return valid
@@ -105,41 +109,18 @@ const App = () => {
   const handleSearch =(event) => {
     setsearchName(event.target.value)
     setShowAll(false)
-    console.log(numbersToShow)
   }
 
   return (
     <div>
-      <Title title={"Phonebook"}/>
-        <div>
-        filter shown with <input
-        value={searchName}
-        onChange={handleSearch}/>
-        </div>
-      <Title title={"add a new"}/>
-      <form onSubmit={addNameAndNumber}>
-        <div>
-          name: <input
-          value={newName}
-          onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input
-          value={newNumber}
-          onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <Title title={"Numbers"}/>
-      <div>
-      <ul>
-      {numbersToShow.map(person =>
-        <Number key={person.id} name={person.name} number={person.number}/>
-      )}
-      </ul>
-      </div> 
+      <Heading text={"Phonebook"}/>
+      <Filter searchName={searchName} handleSearch={handleSearch}/>
+      <SubHeading text={"add a new"}/>
+      <PersonForm addNameAndNumber={addNameAndNumber} 
+      newName={newName} handleNameChange={handleNameChange} 
+      newNumber={newNumber} handleNumberChange={handleNumberChange}/>
+      <SubHeading text={"Numbers"}/>
+      <Persons numbersToShow={numbersToShow}/>
     </div>
   )
 }
