@@ -1,9 +1,8 @@
-//TODO add comments as I've made this a little more confusing than it should be 
-
+//Also adding useEffect to display errors when they occure
 import {useState, useEffect} from 'react'
 import './App.css'
 
-const Number = props => {<li>{props.name} {props.number}</li>}
+const Number = props => <li>{props.name} {props.number}</li>
 
 const Title = props => <h2>{props.title}</h2>
 
@@ -18,6 +17,7 @@ const App = () => {
   const [searchName, setsearchName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [errors, setErrors] = useState([])
+  const [showAll, setShowAll] = useState(true)
 
   const addError = (errorMessage) => {
     //replacing with prevErrors to keep them correct 
@@ -60,7 +60,9 @@ const App = () => {
     return isValid
   }
 
-  
+  /*
+  This is obviously a very simple validation, but for this its okay
+  */
   const validNumber = (numberString) => {
     let valid = true
     for(const c of numberString) {
@@ -70,8 +72,6 @@ const App = () => {
     }
     return valid
   }
-
-
 
   const addNameAndNumber = (event) => {
     event.preventDefault()
@@ -97,19 +97,25 @@ const App = () => {
     }
   }, [errors]); // Runs whenever the `errors` array is updated
 
-
-  const handleSearch =() => {
-
+  
+  const numbersToShow = showAll
+  ? persons
+  : persons.filter(person=>person.name.toLowerCase().includes(searchName.toLowerCase()))
+  
+  const handleSearch =(event) => {
+    setsearchName(event.target.value)
+    setShowAll(false)
+    console.log(numbersToShow)
   }
 
   return (
     <div>
       <Title title={"Phonebook"}/>
-      <form >
+        <div>
         filter shown with <input
         value={searchName}
         onChange={handleSearch}/>
-      </form>
+        </div>
       <Title title={"add a new"}/>
       <form onSubmit={addNameAndNumber}>
         <div>
@@ -129,7 +135,7 @@ const App = () => {
       <Title title={"Numbers"}/>
       <div>
       <ul>
-      {persons.map(person =>
+      {numbersToShow.map(person =>
         <Number key={person.id} name={person.name} number={person.number}/>
       )}
       </ul>
