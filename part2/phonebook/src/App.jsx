@@ -1,12 +1,13 @@
-//Also adding useEffect to display errors when they occure
+// 2.13: The Phonebook step 8
+
 import {useState, useEffect} from 'react'
-import axios from 'axios'
 import './App.css'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Heading from './components/Heading'
 import SubHeading from './components/SubHeading'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -16,14 +17,14 @@ const App = () => {
   const [errors, setErrors] = useState([])
   const [showAll, setShowAll] = useState(true)
 
-  const hook = () => {
-    axios.get('http://localhost:3001/persons')
-    .then(response => {
-      setPersons(response.data)
-    })
-  }
 
-  useEffect(hook, []);
+  useEffect(() => {
+    personService
+    .getAll()
+    .then(initalPersons => {
+      setPersons(initalPersons)
+    })
+  }, [])
 
   const addError = (errorMessage) => {
     //replacing with prevErrors to keep them correct 
@@ -82,22 +83,34 @@ const App = () => {
     return valid
   }
 
+
+
+
   const addNameAndNumber = (event) => {
     event.preventDefault()
     setErrors([])
-    const nameObject = {
+    const nameObject = 
+    {
       name: newName,
       number: newNumber,
-      id : persons.length+1
+      id: String(persons.length +1) 
     }
     const isValidName = validateName()
     const isValidNumber = validateNumber()
-    if(isValidName && isValidNumber) {
-    setPersons(persons.concat(nameObject)) 
-    setNewName('')
-    setNewNumber('')
+    if(isValidName && isValidNumber) 
+    {
+      //updating on the server
+    personService
+    .create(nameObject)
+    .then(returnedPersons => 
+      {
+      setPersons(persons.concat(nameObject)) 
+      setNewName('')
+      setNewNumber('')
+      })  
     } 
   }
+
 
   useEffect(() => {
     if (errors.length > 0) {
