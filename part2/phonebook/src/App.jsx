@@ -107,7 +107,7 @@ const App = () => {
       })  
     } 
   }
-  
+
   useEffect(() => {
     if (errors.length > 0) {
       const errorsString = errors.join('\n'); // Join errors with newline characters
@@ -125,6 +125,24 @@ const App = () => {
     setShowAll(false)
   }
 
+  const handleDelete = (event) => 
+  {
+    event.preventDefault()
+    const idToDelete = event.target.name
+    const personToDelete = persons.filter(person => person.id === idToDelete)         
+    const confirmDelete =  window.confirm(`Delete ${personToDelete[0].name} ? `)
+    
+    if(confirmDelete) 
+      {
+      personService
+      .remove(idToDelete)
+      .then(() => 
+        {
+        setPersons(persons.filter(person=> person.id !== idToDelete))
+        })
+      }
+    }
+
   return (
     <div>
       <Heading text={"Phonebook"}/>
@@ -134,7 +152,7 @@ const App = () => {
       newName={newName} handleNameChange={handleNameChange} 
       newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       <SubHeading text={"Numbers"}/>
-      <Persons numbersToShow={numbersToShow}/>
+      <Persons numbersToShow={numbersToShow} onClick={handleDelete}/>
     </div>
   )
 }

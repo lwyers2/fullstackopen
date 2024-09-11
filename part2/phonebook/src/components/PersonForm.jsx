@@ -1,3 +1,4 @@
+import Button from './Button'
 const PersonForm = (props) => {
     return(
     <form onSubmit={props.addNameAndNumber}>
@@ -12,7 +13,7 @@ const PersonForm = (props) => {
       onChange={props.handleNumberChange} />
     </div>
     <div>
-      <button type="submit">add</button>
+      <Button type="submit" text="add"/>
     </div>
   </form>
     )
