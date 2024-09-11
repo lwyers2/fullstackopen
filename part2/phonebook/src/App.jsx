@@ -83,9 +83,6 @@ const App = () => {
     return valid
   }
 
-
-
-
   const addNameAndNumber = (event) => {
     event.preventDefault()
     setErrors([])
@@ -110,8 +107,7 @@ const App = () => {
       })  
     } 
   }
-
-
+  
   useEffect(() => {
     if (errors.length > 0) {
       const errorsString = errors.join('\n'); // Join errors with newline characters
