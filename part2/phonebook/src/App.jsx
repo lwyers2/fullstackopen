@@ -43,13 +43,39 @@ const App = () => {
     //need a value to return. Set it to true initialy and only change to false if it doesn't follow below rules.
     let isValid = true
     if(persons.map(person => person.name).includes(newName)) {
-      addError(`${newName} is already added to the phonebook`)
-      isValid = false
+
+      const isUpdateNumber = window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)
+      if(isUpdateNumber) 
+      {
+        updateContactNumber(newName, newNumber)
+        isValid = false
+      }
     } else if (newName.length===0) {
       addError(`Name is not populated`)
       isValid = false
     }
     return isValid 
+  }
+
+  const updateContactNumber = (name, newNumber) => {
+    const personToUpdate = persons.find(person => person.name === name)
+
+
+
+    const updatedPerson = 
+    {
+      ...personToUpdate,
+      number: newNumber, 
+    }
+
+    personService
+    .update(personToUpdate.id, updatedPerson)
+    .then((updatedData)=>{
+        setPersons(persons.map(person => 
+          person.id !== personToUpdate.id ? person : updatedData
+        ))
+    })
+
   }
 
   const validateNumber = () => {
@@ -120,7 +146,7 @@ const App = () => {
   ? persons
   : persons.filter(person=>person.name.toLowerCase().includes(searchName.toLowerCase()))
   
-  const handleSearch =(event) => {
+  const handleSearch = (event) => {
     setsearchName(event.target.value)
     setShowAll(false)
   }
