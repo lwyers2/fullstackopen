@@ -7,6 +7,7 @@ import Heading from './components/Heading'
 import SubHeading from './components/SubHeading'
 import personService from './services/persons'
 import Notification from './components/Notification'
+import ErrorDisplay from './components/ErrorDisplay'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -16,6 +17,7 @@ const App = () => {
   const [errors, setErrors] = useState([])
   const [showAll, setShowAll] = useState(true)
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [displayError, setDisplayError] = useState(null)
 
 
   useEffect(() => {
@@ -83,6 +85,14 @@ const App = () => {
         setTimeout(()=>{
           setNotificationMessage(null)
         }, 5000)
+    })
+    .catch(error => {
+      setDisplayError(
+        `Information of ${name} has already been removed from the server`
+      )
+      setTimeout(()=>{
+        setDisplayError(null)
+      }, 10000)
     })
     
 
@@ -188,6 +198,14 @@ const App = () => {
           setNotificationMessage(null)
         }, 5000)
         })
+      .catch(error => {
+        setDisplayError(
+          `Information of ${personToDelete.name} has already been removed from the server`
+        )
+        setTimeout(()=>{
+          setDisplayError(null)
+        }, 10000)
+      })
       }
     }
 
@@ -195,6 +213,7 @@ const App = () => {
     <div>
       <Heading text={"Phonebook"}/>
       <Notification message={notificationMessage}/>
+      <ErrorDisplay message={displayError}/>
       <Filter searchName={searchName} handleSearch={handleSearch}/>
       <SubHeading text={"add a new"}/>
       <PersonForm addNameAndNumber={addNameAndNumber} 
