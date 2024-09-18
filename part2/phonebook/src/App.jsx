@@ -1,5 +1,3 @@
-// 2.13: The Phonebook step 8
-
 import {useState, useEffect} from 'react'
 import './App.css'
 import Filter from './components/Filter'
@@ -8,6 +6,7 @@ import Persons from './components/Persons'
 import Heading from './components/Heading'
 import SubHeading from './components/SubHeading'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -16,6 +15,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [errors, setErrors] = useState([])
   const [showAll, setShowAll] = useState(true)
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
 
   useEffect(() => {
@@ -49,7 +49,10 @@ const App = () => {
       {
         updateContactNumber(newName, newNumber)
         isValid = false
-      }
+      } else 
+      {
+        isValid = false
+      } 
     } else if (newName.length===0) {
       addError(`Name is not populated`)
       isValid = false
@@ -74,7 +77,14 @@ const App = () => {
         setPersons(persons.map(person => 
           person.id !== personToUpdate.id ? person : updatedData
         ))
+        setNotificationMessage(
+          `Updated ${name}`
+        )
+        setTimeout(()=>{
+          setNotificationMessage(null)
+        }, 5000)
     })
+    
 
   }
 
@@ -130,6 +140,12 @@ const App = () => {
       setPersons(persons.concat(nameObject)) 
       setNewName('')
       setNewNumber('')
+      setNotificationMessage(
+        `Added ${newName}`
+      )
+      setTimeout(()=>{
+        setNotificationMessage(null)
+      }, 5000)
       })  
     } 
   }
@@ -155,8 +171,8 @@ const App = () => {
   {
     event.preventDefault()
     const idToDelete = event.target.name
-    const personToDelete = persons.filter(person => person.id === idToDelete)         
-    const confirmDelete =  window.confirm(`Delete ${personToDelete[0].name} ? `)
+    const personToDelete = persons.find(person => person.id === idToDelete)         
+    const confirmDelete =  window.confirm(`Delete ${personToDelete.name} ? `)
     
     if(confirmDelete) 
       {
@@ -165,6 +181,12 @@ const App = () => {
       .then(() => 
         {
         setPersons(persons.filter(person=> person.id !== idToDelete))
+        setNotificationMessage(
+          `Deleted ${personToDelete.name}`
+        )
+        setTimeout(()=>{
+          setNotificationMessage(null)
+        }, 5000)
         })
       }
     }
@@ -172,6 +194,7 @@ const App = () => {
   return (
     <div>
       <Heading text={"Phonebook"}/>
+      <Notification message={notificationMessage}/>
       <Filter searchName={searchName} handleSearch={handleSearch}/>
       <SubHeading text={"add a new"}/>
       <PersonForm addNameAndNumber={addNameAndNumber} 
