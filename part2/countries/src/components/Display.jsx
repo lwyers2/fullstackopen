@@ -13,7 +13,7 @@ const Display = (props) => {
            ) 
            : props.amount === 1 ?  // show only one country
            (
-            <CountryProfile country={props.country}/>
+            <CountryProfile country={props.country} weather={props.weather}/>
            ) 
            : //then show all countries from search
            (
