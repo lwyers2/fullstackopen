@@ -27,7 +27,33 @@ let persons =
     }
 ]
 
-app.use(morgan('tiny'))
+const captureResponseBody = (req, res, next) => {
+    const originalSend = res.send;
+
+    res.send = function (body) {
+        res.locals.responseBody = body
+        originalSend.call(this, body)
+    }
+
+    next()
+}
+
+app.use(captureResponseBody)
+
+app.use(morgan(
+    function (tokens, req, res) {
+        return[
+            tokens.method(req, res),
+            tokens.url(req, res), 
+            tokens.status(req, res),
+            tokens.res(req, res, 'content-length'),
+            String('-'),
+            tokens['response-time'](req, res), 'ms',
+            JSON.stringify(JSON.parse(res.locals.responseBody) || {})
+        ].join(' ')
+    }
+))
+//app.use(morgan(':method :url :status :res[content-length] :response-time ms'))
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -95,7 +121,7 @@ app.post('/api/persons', (request, response) => {
     }
 
     persons = persons.concat(person)
-    response.json(persons)
+    response.json(person)
     
 })
 
