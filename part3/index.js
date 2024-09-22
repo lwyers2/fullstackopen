@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 app.use(express.json())
+const morgan = require('morgan')
 
 let persons = 
 [
@@ -26,10 +27,11 @@ let persons =
     }
 ]
 
+app.use(morgan('tiny'))
+
 app.get('/api/persons', (request, response) => {
     response.json(persons)
   })
-
 
 app.get('/info', (request, response) => {
     const responseDate = new Date()
