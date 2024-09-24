@@ -70,6 +70,10 @@ const cors = require('cors')
 
 app.use(cors())
 
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+
 app.get('/api/persons', (request, response) => {
     response.json(persons)
   })
@@ -140,8 +144,11 @@ app.post('/api/persons', (request, response) => {
     
 })
 
+app.use(unknownEndpoint)
 
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
 
-const PORT = 3001
-app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
+
+})
