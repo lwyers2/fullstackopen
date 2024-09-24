@@ -27,6 +27,9 @@ let persons =
     }
 ]
 
+app.use(express.static('dist'))
+app.use(express.json())
+
 const captureResponseBody = (req, res, next) => {
     const originalSend = res.send;
 
@@ -42,6 +45,15 @@ app.use(captureResponseBody)
 
 app.use(morgan(
     function (tokens, req, res) {
+        let responseBody = res.locals.responseBody
+
+        try{
+            responseBody = JSON.stringify(JSON.parse(responseBody))
+        } catch (e) {
+            responseBody = responseBody || 'No body/Non-JSON response'
+        }
+
+
         return[
             tokens.method(req, res),
             tokens.url(req, res), 
@@ -49,11 +61,14 @@ app.use(morgan(
             tokens.res(req, res, 'content-length'),
             String('-'),
             tokens['response-time'](req, res), 'ms',
-            JSON.stringify(JSON.parse(res.locals.responseBody) || {})
+            responseBody
         ].join(' ')
     }
 ))
-//app.use(morgan(':method :url :status :res[content-length] :response-time ms'))
+
+const cors = require('cors')
+
+app.use(cors())
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
