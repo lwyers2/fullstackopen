@@ -1,36 +1,13 @@
 const express = require('express')
 const app = express()
+require('dotenv').config()
+const Person = require('./models/person')
 app.use(express.json())
 const morgan = require('morgan')
 
-let persons = 
-[
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    },
-    {
-        "id": "5",
-        "name": "Michael Johnstone", 
-        "number": "59865515"
-    }
-]
+
+
+
 
 app.use(express.static('dist'))
 app.use(express.json())
@@ -80,24 +57,22 @@ const unknownEndpoint = (request, response) => {
   }
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
   })
 
 app.get('/info', (request, response) => {
+    Person.find({}).then(persons => {
     const responseDate = new Date()
     response.send(`<p>Phonebook has info for ${persons.length} people <br/> ${responseDate}</p>`)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-
-    if(person) {
-        response.json(person)
-    } else {
-        response.sendStatus(404).end()
-    }
-    response.json(person)
+    Person.findById(request.params.id).then(note => {
+        response.json(note)
+    })
 })
 
 app.delete('/api/persons/:id' , (request, response) => {
