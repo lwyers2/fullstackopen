@@ -82,12 +82,6 @@ app.delete('/api/persons/:id' , (request, response) => {
     response.status(204).end()
 })
 
-const generateId = () => {
-   
-    Id = Math.floor(Math.random() * 3650000)
-
-    return String(Id)
-  }
 
 app.post('/api/persons', (request, response) => {
 
@@ -95,33 +89,33 @@ app.post('/api/persons', (request, response) => {
     const name = request.body.name
 
     
-    if(!number) {
+    if(number === undefined) {
         return response.status(400).json({
             error: 'number missing'
         })
     }
 
-    if(!name) {
+    if(name === undefined) {
         return response.status(400).json({
             error: 'name missing'
         })
     }
 
-    if(persons.find(person => person.name === name)) {
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
-    }
+    // if(persons.find(person => person.name === name)) {
+    //     return response.status(400).json({
+    //         error: 'name must be unique'
+    //     })
+    // }
     
-    const person = {
-        id: generateId(),
+    const person = new Person({
+        
         name: name,
         number: number
-    }
+    })
 
-    persons = persons.concat(person)
-    response.json(person)
-    
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 app.use(unknownEndpoint)
