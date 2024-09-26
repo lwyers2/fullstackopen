@@ -78,6 +78,7 @@ app.get('/info', (request, response) => {
     })
 })
 
+//For exercise 2.18
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
     .then(note => {
