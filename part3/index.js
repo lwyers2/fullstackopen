@@ -112,12 +112,6 @@ app.post('/api/persons', (request, response) => {
             error: 'name missing'
         })
     }
-
-    // if(persons.find(person => person.name === name)) {
-    //     return response.status(400).json({
-    //         error: 'name must be unique'
-    //     })
-    // }
     
     const person = new Person({
         
@@ -128,7 +122,27 @@ app.post('/api/persons', (request, response) => {
     person.save().then(savedPerson => {
         response.json(savedPerson)
     })
+
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    console.log((request))
+    const body = request.body
+
+    const person = {
+        name : body.name, 
+        number : body.number
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    .then(updatedPerson => {
+        response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
+
+
 
 app.use(unknownEndpoint)
 
