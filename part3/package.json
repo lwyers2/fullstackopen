@@ -6,6 +6,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
     "build:ui": "rm -rf dist && cd ../part2/phonebook && npm run build && cp -r dist ../../part3",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
@@ -20,6 +21,10 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@stylistic/eslint-plugin-js": "^2.8.0",
+    "eslint": "^9.11.1",
+    "globals": "^15.9.0",
     "nodemon": "^3.1.7"
   }
 }
