@@ -16,9 +16,16 @@ mongoose.connect(url)
     })
 
 const personSchema = new mongoose.Schema({
-        name: String,
-        number: String
-})
+        name: {
+            type: String,
+            minLength: [3, `Path \`name\` (\`{VALUE}\`)is shorter than the minimum allowed length(3)`],
+            required: true
+        },
+        number: {
+            type: String,
+            required: true
+        }
+        })
 
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {

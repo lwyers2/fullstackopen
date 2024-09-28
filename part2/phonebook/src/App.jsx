@@ -98,36 +98,6 @@ const App = () => {
 
   }
 
-  const validateNumber = () => {
-    let isValid = true
-    if(newNumber.length===0) {
-      addError(`Number is not populated`)
-      isValid = false
-    } else if (!validNumber(newNumber)) {
-      addError(`${newNumber} is not a valid number`)
-      isValid = false
-    } else if ((persons.map(person => person.number).includes(newNumber))) {
-      addError(`${newNumber} already exists in phonebook`)
-      isValid = false
-    }
-    return isValid
-  }
-
-  /*
-  This is obviously a very simple validation, but for this its okay
-  */
-  const validNumber = (numberString) => {
-    let valid = true
-    for(const c of numberString) {
-      if (!(c >= '0' && c<='9')){
-        if( (!c === '-') )
-        {
-        valid = false;
-        }
-      }
-    }
-    return valid
-  }
 
   const addNameAndNumber = (event) => {
     event.preventDefault()
@@ -138,10 +108,13 @@ const App = () => {
       number: newNumber,
       id: String(persons.length +1) 
     }
-    const isValidName = validateName()
-    const isValidNumber = validateNumber()
-    if(isValidName && isValidNumber) 
-    {
+
+    if(!newNumber) {
+      addError(`Number is not populated`)
+    }
+    if(!newName) {
+      addError(`Name is not populated`)
+    } 
       //updating on the server
     personService
     .create(nameObject)
@@ -156,9 +129,16 @@ const App = () => {
       setTimeout(()=>{
         setNotificationMessage(null)
       }, 5000)
+      })
+      .catch(error => {
+        const errorMessage = error.response?.data?.error || error.message || 'An error occured'
+        setDisplayError(`Error: ${errorMessage}`)
+        setTimeout(()=>{
+          setDisplayError(null)
+        }, 10000)
       })  
     } 
-  }
+  
 
   useEffect(() => {
     if (errors.length > 0) {
