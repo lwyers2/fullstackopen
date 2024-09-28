@@ -13,7 +13,7 @@ app.use(express.static('dist'))
 app.use(express.json())
 
 const captureResponseBody = (req, res, next) => {
-    const originalSend = res.send;
+    const originalSend = res.send
 
     res.send = function (body) {
         res.locals.responseBody = body
@@ -99,35 +99,56 @@ app.delete('/api/persons/:id' , (request, response, next) => {
 
 
 app.post('/api/persons', (request, response, next) => {
-
     const number = request.body.number
     const name = request.body.name
 
-    const person = new Person({        
-        name: name,
-        number: number
-    })
+    // Check if the name already exists
+    Person.findOne({ name: name })
+        .then(existingPerson => {
+            if (existingPerson) {
+                // If a person with the same name exists, respond with a conflict status
+                // Here, you can return the existing person's details to handle it in the frontend
+                return response.status(409).json({ 
+                    message: `Name '${name}' already exists in the phonebook. Do you want to update the number?`, 
+                    existingPerson 
+                })
+            }
 
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
-    }).catch(error=>next(error))
+            // If no existing person, create a new person
+            const person = new Person({
+                name: name,
+                number: number
+            })
 
+            // Save the new person
+            return person.save()
+        })
+        .then(savedPerson => {
+            response.status(201).json(savedPerson) // Return created person with 201 status
+        })
+        .catch(error => next(error))
 })
 
+// PUT endpoint to update person's number
 app.put('/api/persons/:id', (request, response, next) => {
-    console.log((request))
     const body = request.body
 
     const person = {
-        name : body.name, 
-        number : body.number
+        name: body.name, 
+        number: body.number
     }
 
-    Person.findByIdAndUpdate(request.params.id, person, {new: true})
-    .then(updatedPerson => {
-        response.json(updatedPerson)
-    })
-    .catch(error => next(error))
+    // Update the existing person's number
+    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true })
+        .then(updatedPerson => {
+            if (updatedPerson) {
+                response.json(updatedPerson)
+            } else {
+                // If no person found with that ID
+                return response.status(404).send({ error: 'Person not found' })
+            }
+        })
+        .catch(error => next(error))
 })
 
 

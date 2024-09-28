@@ -41,111 +41,70 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-  const validateName = () => {
-    //need a value to return. Set it to true initialy and only change to false if it doesn't follow below rules.
-    let isValid = true
-    if(persons.map(person => person.name).includes(newName)) {
-
-      const isUpdateNumber = window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)
-      if(isUpdateNumber) 
-      {
-        updateContactNumber(newName, newNumber)
-        isValid = false
-      } else 
-      {
-        isValid = false
-      } 
-    } else if (newName.length===0) {
-      addError(`Name is not populated`)
-      isValid = false
-    }
-    return isValid 
-  }
-
-  const updateContactNumber = (name, newNumber) => {
-    const personToUpdate = persons.find(person => person.name === name)
-
-
-
-    const updatedPerson = 
-    {
-      ...personToUpdate,
-      number: newNumber, 
-    }
-
-    personService
-    .update(personToUpdate.id, updatedPerson)
-    .then((updatedData)=>{
-        setPersons(persons.map(person => 
-          person.id !== personToUpdate.id ? person : updatedData
-        ))
-        setNotificationMessage(
-          `Updated ${name}`
-        )
-        setTimeout(()=>{
-          setNotificationMessage(null)
-        }, 5000)
-    })
-    .catch(error => {
-      setDisplayError(
-        `Information of ${name} has already been removed from the server`
-      )
-      setTimeout(()=>{
-        setDisplayError(null)
-      }, 10000)
-    })
-    
-
-  }
 
 
   const addNameAndNumber = (event) => {
     event.preventDefault()
-    setErrors([])
-    const nameObject = 
-    {
-      name: newName,
-      number: newNumber,
-      id: String(persons.length +1) 
+
+    const nameObject = {
+        name: newName,
+        number: newNumber
     }
 
-    if(!newNumber) {
-      addError(`Number is not populated`)
-    }
-    if(!newName) {
-      addError(`Name is not populated`)
-    } 
-      //updating on the server
+    // Updating on the server
     personService
-    .create(nameObject)
-    .then(returnedPersons => 
-      {
-      setPersons(persons.concat(nameObject)) 
-      setNewName('')
-      setNewNumber('')
-      setNotificationMessage(
-        `Added ${newName}`
-      )
-      setTimeout(()=>{
-        setNotificationMessage(null)
-      }, 5000)
-      })
-      .catch(error => {
-        const errorMessage = error.response?.data?.error || error.message || 'An error occured'
-        setDisplayError(`Error: ${errorMessage}`)
-        setTimeout(()=>{
-          setDisplayError(null)
-        }, 10000)
-      })  
-    } 
+        .create(nameObject)
+        .then(returnedPersons => {
+            setPersons(persons.concat(returnedPersons))
+            setNewName('')
+            setNewNumber('')
+            setNotificationMessage(`Added ${newName}`)
+            setTimeout(() => {
+                setNotificationMessage(null)
+            }, 5000)
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 409) {
+                const existingPerson = error.response.data.existingPerson
+                const confirmUpdate = window.confirm(`The name '${existingPerson.name}' already exists. Do you want to update the number to '${newNumber}'?`)
+
+                if (confirmUpdate) {
+                    // If confirmed, send a PUT request to update the existing person's number
+                    personService
+                        .update(existingPerson.id, { number: newNumber }) // Only update the number
+                        .then(updatedPerson => {
+                            setPersons(persons.map(person => (person.id === updatedPerson.id ? updatedPerson : person)))
+                            setNewName('')
+                            setNewNumber('')
+                            setNotificationMessage(`Updated ${updatedPerson.name}'s number`)
+                            setTimeout(() => {
+                                setNotificationMessage(null)
+                            }, 5000)
+                        })
+                        .catch(updateError => {
+                            setDisplayError(`Failed to update: ${updateError.message}`)
+                            setTimeout(() => {
+                                setDisplayError(null)
+                            }, 10000)
+                        })
+                }
+            } else {
+                // Handle other errors
+                setDisplayError(`Failed to add: ${error.message}`)
+                setTimeout(() => {
+                    setDisplayError(null)
+                }, 10000)
+            }
+        })
+}
   
 
   useEffect(() => {
     if (errors.length > 0) {
-      const errorsString = errors.join('\n'); // Join errors with newline characters
-      window.alert(errorsString); // Display errors in an alert box
+      const errorsString = errors.join('\n') // Join errors with newline characters
+      window.alert(errorsString) // Display errors in an alert box
     }
-  }, [errors]); // Runs whenever the `errors` array is updated
+  }, [errors]) // Runs whenever the `errors` array is updated
 
   
   const numbersToShow = showAll
