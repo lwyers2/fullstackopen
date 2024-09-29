@@ -53,9 +53,37 @@ const mostBlogs = (blogs) => {
     }
 }
 
+const mostLikes = (blogs) => {
+    if(!blogs || blogs.length ==0) {
+        return {}
+    } else {
+        const blogLikeCount = blogs.reduce((accumulator, blog) => {
+            if(accumulator[blog.author]) {
+            accumulator[blog.author] += blog.likes
+            } else {
+                accumulator[blog.author] = blog.likes
+            }
+            return accumulator
+        }, {})
+
+        const blogInfo = Object.keys(blogLikeCount).map(author =>{
+            return {
+                author: author,
+                likes: blogLikeCount[author]
+            }
+        })
+
+        const mostLikes = blogInfo.reduce((max, blog) => {
+           return blog.likes > max.likes ? blog : max
+        })
+        return mostLikes
+    }
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favouriteBlog, 
-    mostBlogs
+    mostBlogs, 
+    mostLikes
 }
