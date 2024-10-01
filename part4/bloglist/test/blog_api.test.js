@@ -65,7 +65,13 @@ test.only('the first blog is about React', async () => {
     assert(contents.includes('React patterns'))
 })
 
-test.only('id field is named id')
+test.only('id field is named id', async () => {
+    const response =await api.get('/api/blogs')
+    const contents = response.body.map(e => Object.keys(e))
+    contents.forEach(e => {
+        assert(e.includes('id'))
+    })         
+})
 
 after(async () => {
     await mongoose.connection.close()
