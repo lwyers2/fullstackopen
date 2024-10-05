@@ -20,26 +20,26 @@ describe('When there is initially some blogs saved', () => {
         await Blog.insertMany(helper.initialBlogs)
     })
 
-    test.only('blogs are returned as json', async () => {
+    test('blogs are returned as json', async () => {
         await api
         .get('/api/blogs')
         .expect(200)
         .expect('Content-Type', /application\/json/)
     })
 
-    test.only('all blogs are returned', async () => {
+    test('all blogs are returned', async () => {
         const response = await api.get('/api/blogs')
         
         assert.strictEqual(response.body.length, helper.initialBlogs.length)
     })
 
-    test.only('the first blog is about React', async () => {
+    test('the first blog is about React', async () => {
         const response = await api.get('/api/blogs')
         const contents = response.body.map(e => e.title)
         assert(contents.includes('React patterns'))
     })
 
-    test.only('id field is named id', async () => {
+    test('id field is named id', async () => {
         const response =await api.get('/api/blogs')
         const contents = response.body.map(e => Object.keys(e))
         contents.forEach(e => {
@@ -51,7 +51,7 @@ describe('When there is initially some blogs saved', () => {
 
 describe('addition of a new blog', () => {
 
-    test.only('a valid blog can be added', async () => {
+    test('a valid blog can be added', async () => {
 
         await api
         .post('/api/blogs')
@@ -68,7 +68,7 @@ describe('addition of a new blog', () => {
         assert(titles.includes('First class tests'))
     })
     
-    test.only('a blog with likes field missing returns 0', async () => {
+    test('a blog with likes field missing returns 0', async () => {
     
         await api
         .post('/api/blogs')
@@ -85,7 +85,7 @@ describe('addition of a new blog', () => {
         assert.strictEqual(newBlogAdded.likes, 0)
     })
     
-    test.only('a blog with missing url returns 400', async () => {
+    test('a blog with missing url returns 400', async () => {
         
         await api 
         .post('/api/blogs')
@@ -99,7 +99,7 @@ describe('addition of a new blog', () => {
         assert.strictEqual(response.body.length, blogsAtEnd.length)
     })
     
-    test.only('a blog with missing title returns 400', async () => {
+    test('a blog with missing title returns 400', async () => {
     
         await api 
         .post('/api/blogs')
@@ -189,6 +189,98 @@ test('creation succeeds with a fresh username', async () => {
     const usernames = usersAtEnd.map(u => u.username)
     assert(usernames.includes(newUser.username))
   })
+
+})
+
+describe('users with invalid name and password are not added', () => {
+    beforeEach(async () => {
+        await User.deleteMany({})
+    
+        const passwordHash = await bcrypt.hash('sekret', 10)
+        const user = new User({ username: 'root', name: 'admin', passwordHash})
+    
+        await user.save()
+    })
+
+    test('a blog with missing username returns 400', async () => {
+
+        const usersAtStart = await helper.usersInDb()
+
+        await api 
+        .post('/api/users')
+        .send(helper.emptyUserName)
+        .expect(400)
+
+
+        const usersAtEnd = await helper.usersInDb()
+    
+        assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
+
+    test('a blog with missing password returns 400', async () => {
+
+        const usersAtStart = await helper.usersInDb()
+
+        await api 
+        .post('/api/users')
+        .send(helper.emptyPassword)
+        .expect(400)
+
+
+        const usersAtEnd = await helper.usersInDb()
+    
+        assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
+
+    test('creation fails with proper statuscode and message if username already taken', async () => {
+        const usersAtStart = await helper.usersInDb()
+    
+        const newUser = {
+          username: 'root',
+          name: 'Superuser',
+          password: 'salainen',
+        }
+    
+        const result = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+          .expect('Content-Type', /application\/json/)
+    
+        const usersAtEnd = await helper.usersInDb()
+    
+        assert(result.body.error.includes('expected `username` to be unique'))
+    
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+      })
+
+    test('creation fails if password below three characters', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        await api 
+        .post('/api/users')
+        .send(helper.invalidPassword)
+        .expect(400)
+
+
+        const usersAtEnd = await helper.usersInDb()
+    
+        assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
+
+    test('creation fails if username below three characters', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        await api 
+        .post('/api/users')
+        .send(helper.invalidUserName)
+        .expect(400)
+
+
+        const usersAtEnd = await helper.usersInDb()
+    
+        assert.strictEqual(usersAtStart.length, usersAtEnd.length)
+    })
 
 })
 

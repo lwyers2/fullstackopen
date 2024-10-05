@@ -58,6 +58,35 @@ const nonExistingId = async () => {
     })
 }
 
+
+const invalidUserName = {
+    username: "In",
+    name: "Valid Name",
+    password: "ValidPassword"
+}
+
+const invalidPassword = {
+    username: "Invalid Password",
+    name: "Valid Name",
+    password: "in"
+}
+
+const emptyUserName = {
+    name: "Valid Name",
+    password: "ValidPassword"
+}
+
+const emptyPassword = {
+    username: "Invalid Password",
+    name: "Valid Name"
+}
+
+const nonUniqueUsername = {
+    username: 'root',
+    name: 'admin',
+    password: 'sekret'
+}
+
 const blogsInDb = async () => {
     const blogs = await Blog.find({})
     return blogs.map(blog => blog.toJSON())
@@ -76,5 +105,10 @@ module.exports = {
     noTitleBlog,
     nonExistingId,
     blogsInDb,
-    usersInDb 
+    usersInDb,
+    invalidUserName,
+    invalidPassword,
+    emptyUserName,
+    emptyPassword,
+    nonUniqueUsername 
 }
