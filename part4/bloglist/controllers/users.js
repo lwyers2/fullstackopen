@@ -5,6 +5,7 @@ const User = require('../models/user')
 usersRouter.post('/', async (request, response, next) => {
   const { username, name, password } = request.body
 
+
   if(!request.body.password) {
     return response.status(400).json({ error: `password missing `})
   }
@@ -29,7 +30,9 @@ usersRouter.post('/', async (request, response, next) => {
 })
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
+  const users = await User
+    .find({}).populate('blogs')
+
   response.json(users)
 })
 
