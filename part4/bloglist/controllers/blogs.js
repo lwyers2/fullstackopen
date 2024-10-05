@@ -16,20 +16,7 @@ blogsRouter.get('/', async (request, response) => {
   blogsRouter.post('/', async (request, response) => {
     const body = request.body
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if(!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid '})
-    }
-
-    let userId
-    if(!body.userId) {
-      const user = await User.findOne({})
-      userId = user.id
-    } else {
-      userId = body.userId
-    } 
-
-    const user = await User.findById(decodedToken.id)
+   const user = request.user
 
     if(!body.title || !body.url) {
       return response.status(400).json({error : `url or title missing`})
@@ -51,11 +38,9 @@ blogsRouter.get('/', async (request, response) => {
 
   blogsRouter.delete('/:id', async (request, response) => {
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if(!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid '})
-    }
-    const user = await User.findById(decodedToken.id)
+    
+    const user = request.user
+    
     const userId = user.id
 
     const blog = await Blog.findById(request.params.id)
