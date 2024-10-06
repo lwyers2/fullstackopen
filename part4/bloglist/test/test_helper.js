@@ -20,7 +20,7 @@ const initialBlogs =[
         title: "Canonical string reduction",
         author: "Edsger W. Dijkstra",
         url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-        likes: 12
+        likes: 12,
        
       }
 ]
@@ -30,6 +30,7 @@ const validBlog = {
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
     likes: 10
+   
 }
 
 const noLikesFieldBlog = {
@@ -48,6 +49,7 @@ const noTitleBlog = {
     url: "www.notitle.com",
     author: "Robert C. Martin",
     likes: 14
+    
 }
 
 const nonExistingId = async () => {
@@ -55,6 +57,7 @@ const nonExistingId = async () => {
         title: 'Will be removed',
         author: 'Removed name',
         url: 'www.nonexisting.com'
+      
     })
 }
 
