@@ -5,9 +5,13 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [newBlog, setNewBlog] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -26,7 +30,8 @@ const App = () => {
 
   const loginForm = () => (
     <div>
-      <h2>log in to Application</h2><form onSubmit={handleLogin}>
+      <h2>log in to Application</h2>
+      <form onSubmit={handleLogin}>
       <div>
         username
         <input
@@ -54,9 +59,39 @@ const App = () => {
     <p>{user.name} logged-in
     <button type="button" onClick={handleLogout}>logout</button>
     </p>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+    </div>
+  )
+
+  const createBlogForm = () => (
+    <div>
+      <h2>create new</h2>
+      <form onSubmit={handleCreate}>
+        <div>
+          title:
+        <input
+        type="text"
+        value={title}
+        onChange={({ target }) => setTitle(target.value)} 
+        />
+        </div>
+        <div>
+          author:
+        <input
+        type="text"
+        value={author}
+        onChange={({ target }) => setAuthor(target.value)} 
+        />
+        </div>
+        <div>
+          url:
+        <input
+        type="url"
+        value={url}
+        onChange={({ target }) => setUrl(target.value)} 
+        />
+        </div>
+        <button type="submit">create</button>
+      </form>
     </div>
   )
 
@@ -78,6 +113,22 @@ const App = () => {
     }
   }
 
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    const blogObject = {
+      author: author,
+      title: title,
+      url: url
+    }
+
+    blogService
+    .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setNewBlog('')
+      })
+  }
+
   const handleLogout = async (event) => {
     event.preventDefault()
     window.localStorage.clear()
@@ -86,12 +137,20 @@ const App = () => {
     setPassword('')
   }
 
+
   return (
     <div>
       {user === null ?
-      loginForm() :
       <div>
-        {blogForm()}
+      {loginForm()}
+      </div> 
+      :
+      <div>
+      {blogForm()}
+      {createBlogForm()}
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} />
+      )}
       </div>
     }
     </div>
