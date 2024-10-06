@@ -1,0 +1,3 @@
+DELETE http://localhost:3003/api/blogs/670199c645fb93706f015a9d
+Content-Type: application/json
+Authorization: 
