@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => { 
+
+const Blog = ({ blog, updatedLikes }) => { 
   const[showAll, setShowAll] = useState(false)
 
   const blogStyle = {
@@ -9,6 +11,14 @@ const Blog = ({ blog }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5
+  }
+
+  const addLike = () => {
+    const updatedBlog = {
+      ...blog, 
+      likes: blog.likes + 1
+    }
+    updatedLikes(blog.id, updatedBlog)
   }
   
   return (
@@ -20,7 +30,8 @@ const Blog = ({ blog }) => {
        <br />
        {blog.url}
        <br />
-       likes {blog.likes}
+       likes {blog.likes} 
+       <button onClick={() => addLike()}>like</button>
        <br />
        {blog.author}
        </div>

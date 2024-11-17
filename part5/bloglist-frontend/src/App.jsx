@@ -12,9 +12,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState('')
   const [notificationType, setNotificationType] = useState('')
 
@@ -106,6 +103,27 @@ const App = () => {
   </Togglable>
   )
 
+  const updateBlogLikes = async (id, updatedBlog) => {
+    try {
+      const returnedBlog = await blogService.update(id, updatedBlog)
+      setBlogs(blogs.map(blog => (blog.id !== id ? blog : returnedBlog)))
+      setNotificationType('notification')
+      setMessage(`Blog "${returnedBlog.title}" has been liked!`)
+      setTimeout(() => {
+        setMessage(null)
+        setNotificationType(null)
+      }, 5000)
+    } catch (error) {
+        setNotificationType('error')
+      setMessage('Failed to update blog likes')
+      setTimeout(() => {
+        setMessage(null)
+        setNotificationType(null)
+      }, 5000)
+      }
+  }
+  
+
 
 
   return (
@@ -119,7 +137,7 @@ const App = () => {
           <button type="button" onClick={handleLogout}>logout</button>
           {blogForm()}
           {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updatedLikes={updateBlogLikes} />
       )}
           </div>
       }
