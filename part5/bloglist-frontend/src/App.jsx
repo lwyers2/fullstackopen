@@ -114,13 +114,36 @@ const App = () => {
         setNotificationType(null)
       }, 5000)
     } catch (error) {
-        setNotificationType('error')
+      setNotificationType('error')
       setMessage('Failed to update blog likes')
       setTimeout(() => {
+      setMessage(null)
+      setNotificationType(null)
+      }, 5000)
+      }
+  }
+
+  const deleteBlog = async (id) => {
+    const blog = blogs.find(b => b.id === id)
+    try{
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+        await blogService.remove(id)
+        setBlogs(blogs.filter(blog => blog.id !== id))
+        setNotificationType('notification')
+        setMessage('Blog successfully deleted')
+        setTimeout(() => {
         setMessage(null)
         setNotificationType(null)
       }, 5000)
       }
+      } catch (error) {
+      setNotificationType('error')
+      setMessage('Failed to update blog likes')
+      setTimeout(() => {
+      setMessage(null)
+      setNotificationType(null)
+      }, 5000)
+    }
   }
   
 
@@ -139,7 +162,7 @@ const App = () => {
           {blogs
           .sort((a, b) => b.likes - a.likes)
           .map(blog =>
-        <Blog key={blog.id} blog={blog} updatedLikes={updateBlogLikes} />
+        <Blog key={blog.id} blog={blog} updatedLikes={updateBlogLikes} deleteBlog={deleteBlog} user = {user}/>
       )}
           </div>
       }
