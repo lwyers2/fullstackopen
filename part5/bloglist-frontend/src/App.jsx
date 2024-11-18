@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -31,9 +31,6 @@ const App = () => {
     }
   }, [])
 
-
-
-  
   const handleLogin = async (event) => {
     event.preventDefault()
     try{
@@ -57,8 +54,6 @@ const App = () => {
     }
   }
 
-
-
   const handleLogout = async (event) => {
     event.preventDefault()
     window.localStorage.clear()
@@ -69,13 +64,13 @@ const App = () => {
 
   const loginForm = () => (
     <div>
-    <LoginForm
-    username={username}
-    password={password}
-    handleUsernameChange={({ target }) => setUsername(target.value)}
-    handlePasswordChange={({ target }) => setPassword(target.value)}
-    handleSubmit={handleLogin}
-    />
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
     </div>
   )
 
@@ -84,23 +79,23 @@ const App = () => {
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService
-    .create(blogObject)
+      .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
       })
 
-      setNotificationType('notification')
-      setMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
-      setTimeout(() => {
-        setMessage(null)
-        setNotificationType(null)
-      }, 5000)
+    setNotificationType('notification')
+    setMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
+    setTimeout(() => {
+      setMessage(null)
+      setNotificationType(null)
+    }, 5000)
   }
 
   const blogForm = () => (
     <Togglable buttonLabel='new blog' ref={blogFormRef}>
-    <BlogForm createBlog={addBlog} />
-  </Togglable>
+      <BlogForm createBlog={addBlog} />
+    </Togglable>
   )
 
   const updateBlogLikes = async (id, updatedBlog) => {
@@ -117,10 +112,10 @@ const App = () => {
       setNotificationType('error')
       setMessage('Failed to update blog likes')
       setTimeout(() => {
-      setMessage(null)
-      setNotificationType(null)
+        setMessage(null)
+        setNotificationType(null)
       }, 5000)
-      }
+    }
   }
 
   const deleteBlog = async (id) => {
@@ -132,39 +127,36 @@ const App = () => {
         setNotificationType('notification')
         setMessage('Blog successfully deleted')
         setTimeout(() => {
-        setMessage(null)
-        setNotificationType(null)
-      }, 5000)
+          setMessage(null)
+          setNotificationType(null)
+        }, 5000)
       }
-      } catch (error) {
+    } catch (error) {
       setNotificationType('error')
       setMessage('Failed to update blog likes')
       setTimeout(() => {
-      setMessage(null)
-      setNotificationType(null)
+        setMessage(null)
+        setNotificationType(null)
       }, 5000)
     }
   }
-  
-
-
 
   return (
     <div>
       <h1>Blogs</h1>
       <Notification message={message} notificationType={notificationType}/>
       {user === null ?
-      loginForm():
-      <div>
+        loginForm():
+        <div>
           <p>{user.name} logged-in</p>
           <button type="button" onClick={handleLogout}>logout</button>
           {blogForm()}
           {blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map(blog =>
-        <Blog key={blog.id} blog={blog} updatedLikes={updateBlogLikes} deleteBlog={deleteBlog} user = {user}/>
-      )}
-          </div>
+            .sort((a, b) => b.likes - a.likes)
+            .map(blog =>
+              <Blog key={blog.id} blog={blog} updatedLikes={updateBlogLikes} deleteBlog={deleteBlog} user = {user}/>
+            )}
+        </div>
       }
     </div>
   )
