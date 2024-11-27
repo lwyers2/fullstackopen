@@ -26,7 +26,7 @@ const Blog = ({ blog, updatedLikes, deleteBlog, user }) => {
   return (
     <div style={blogStyle}>
       {showAll ? (
-        <div>
+        <div className="showBlog">
           {blog.title} {blog.author} &#9;
           <button onClick={() => setShowAll(false)}>hide</button>
           <br />
@@ -42,7 +42,7 @@ const Blog = ({ blog, updatedLikes, deleteBlog, user }) => {
           }
         </div>
       ) : (
-        <div>
+        <div className="hideBlog">
           {blog.title} {blog.author}&#9;
           <button onClick={() => setShowAll(true)}>view</button>
         </div>
