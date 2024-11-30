@@ -41,6 +41,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBloglistappUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')

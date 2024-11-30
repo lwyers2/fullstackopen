@@ -31,8 +31,8 @@ const errorHandler = (error, request, response, next) => {
 
 const getTokenFrom = request => {
   const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
   }
   return null
 }
@@ -41,23 +41,28 @@ const userExtractor = async (request, response, next) => {
   const token = getTokenFrom(request)
 
   if (!token) {
-    return response.status(401).json({ error: 'token missimg' })
+    return response.status(401).json({ error: 'token missing' })
   }
 
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!decodedToken.id) {
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+    console.log(`Decoded Token ID: ${decodedToken.id}`)
+
+    const user = await User.findById(decodedToken.id)
+    if (!user) {
+      return response.status(401).json({ error: 'user not found' })
+    }
+    console.log('Authenticated User:', user)
+
+    request.user = user
+    next()
+  } catch (error) {
+    console.error('Error verifying token:', error.message)
     return response.status(401).json({ error: 'token invalid' })
   }
-
-  const user = await User.findById(decodedToken.id)
-
-  if (!user) {
-    return response.status(401).json({ error: 'user not found' })
-  }
-
-  request.user = user
-
-  next()
 }
 
 module.exports = {

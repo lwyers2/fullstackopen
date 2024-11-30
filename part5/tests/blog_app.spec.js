@@ -38,7 +38,21 @@ describe('Blog app', () => {
       await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
 
       await expect(page.getByText('Luke Wyers logged-in')).not.toBeVisible() 
+    })
+  })
 
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+    await loginWith(page, 'lukew', 'password')  
+    })
+
+    test('a new blog can be created', async ({page}) => {
+      await createBlog(page, 'title', 'author', 'http://localhost:5173/')
+      await expect(page.getByText(`title author`)).toBeVisible()
+      const notificationDiv = await page.locator('.notification')
+      await expect(notificationDiv).toContainText(`a new blog title by author added`)
+      await expect(notificationDiv).toHaveCSS('border-style', 'solid')
+      await expect(notificationDiv).toHaveCSS('color', 'rgb(0, 128, 0)')
     })
   })
 })

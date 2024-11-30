@@ -15,6 +15,7 @@ router.post('/', userExtractor, async (request, response) => {
   const user = request.user
 
   if (!user ) {
+    console.log('user missing')
     return response.status(403).json({ error: 'user missing' })
   }
 
@@ -42,7 +43,7 @@ router.delete('/:id', userExtractor, async (request, response) => {
   }
 
   if ( user.id.toString() !== blog.user.toString() ) {
-    return response.status(403).json({ error: 'user not authorized' })
+    return response.status(403).json({ error: 'authorized' })
   }
 
   await blog.deleteOne()
