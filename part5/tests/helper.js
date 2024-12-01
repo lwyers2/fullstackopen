@@ -5,13 +5,15 @@ const loginWith = async (page, username, password) => {
 }
 
 const createBlog = async(page, title, author, url) => {
+  await page.getByRole('button', { name: 'new blog' }).waitFor()
   await page.getByRole('button', { name: 'new blog'}).click()
   await page.getByTestId('title').fill(title)
   await page.getByTestId('author').fill(author)
   await page.getByTestId('url').fill(url)
   await page.getByRole('button', { name: 'create' }).click()
   const blogTitle = `${title} ${author}`
-  await page.locator(`text=${blogTitle}`).waitFor({ state: 'attached' })
+  await page.locator(`text=${blogTitle}`).waitFor()
 }
+
 
 export { loginWith , createBlog }
