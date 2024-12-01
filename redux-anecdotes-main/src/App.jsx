@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
+import { createAnecdote } from './reducers/anecdoteReducer'
 
 const App = () => {
   const anecdotes = useSelector((state) => 
@@ -22,16 +23,7 @@ const App = () => {
 
   const getId = () => (100000 * Math.random()).toFixed(0)
 
-  const createAnecdote = (content) => {
-    return {
-      type: 'NEW_ANECDOTE',
-      payload: {
-        content,
-        id: getId(),
-        votes: 0 
-      }
-    }
-  }
+
 
   return (
     <div>
