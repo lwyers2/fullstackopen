@@ -7,12 +7,16 @@ const AnecdoteList = () => {
   
   const anecdotes = useSelector((state) => {
     const { anecdotes, filter } = state
-    if (!filter) return anecdotes
-    return anecdotes.filter((anecdote) =>
-      anecdote.content.toLowerCase().includes(filter.toLowerCase())
-    )
-  })
+    // Apply filtering if a filter exists
+    const filteredAnecdotes = filter
+      ? anecdotes.filter((anecdote) =>
+          anecdote.content.toLowerCase().includes(filter.toLowerCase())
+        )
+      : anecdotes
 
+    // Sort by votes in descending order
+    return [...filteredAnecdotes].sort((a, b) => b.votes - a.votes)
+  })
 
   return (
     <div>
