@@ -10,19 +10,19 @@ const App = () => {
     queryFn: getAnecdotes,
     retry: false
   })
-  console.log(JSON.parse(JSON.stringify(result)))
 
-  if( result.isLoading) {
-    return <div>loading data...</div>
+  if (result.isLoading) {
+    return <div>Loading data...</div>
   }
 
-  if( result.isError) {
+  if (result.isError) {
     return <div>Sorry, the anecdote service is not available due to server issues.</div>
   }
+
   const anecdotes = result.data
 
   const handleVote = (anecdote) => {
-    console.log('vote')
+    console.log('Voting for anecdote', anecdote)
   }
 
   return (
