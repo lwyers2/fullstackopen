@@ -46,14 +46,11 @@ export const vote = id => {
       ...anecdoteToChange,
       votes: anecdoteToChange.votes +1,
     }
-    console.log('Updated anecdote before API call:', updatedAnecdote)
 
     const newAnecdote = await anecdoteService.update(id, updatedAnecdote)
-    console.log('Backend response:', newAnecdote)
     dispatch(updateVote(newAnecdote)) // Ensure this passes the correct object
-    } else {
-      console.error(`Anecdote with id ${id} not found in state.`)
-  }
+    }
+ 
   }
   
 }
