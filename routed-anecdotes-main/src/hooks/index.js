@@ -7,10 +7,11 @@ export const useField = (type) => {
     setValue(event.target.value)
   }
 
+  const onClear = () => setValue('')
+
   return {
-    type,
-    value,
-    onChange
+    inputProps: {type,value,onChange,},
+    onClear,
   }
 }
 
